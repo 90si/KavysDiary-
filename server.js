@@ -7,7 +7,7 @@ app.use(cors());
 app.use(express.json());
 app.use(express.static('public'));
 
-const API_KEY = "sk-or-v1-sk-or-v1-4d6...b94"; 
+const API_KEY = "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"; 
 
 const KAVYA_SYSTEM_PROMPT = `
 You are playing the role of Kavya Rawat in an interactive roleplay story game.
