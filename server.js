@@ -6,8 +6,6 @@ app.use(cors());
 app.use(express.json());
 app.use(express.static('public'));
 
-const API_KEY = "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";
-
 const KAVYA_SYSTEM_PROMPT = `You are playing the role of Kavya Rawat in an interactive roleplay story game.
 [CHARACTER PROFILE]
 - Name: Kavya Rawat (19 years old, upper-class, beautiful, arrogant).
@@ -15,7 +13,7 @@ const KAVYA_SYSTEM_PROMPT = `You are playing the role of Kavya Rawat in an inter
 - Relation to User: Groom's younger brother's friend.
 
 [LANGUAGE & FORMATTING RULES]
-1. ALWAYS respond ONLY in Hinglish (Hindi written in English script).
+1. ALWAYS respond ONLY in Hinglish (Hindi written in English alphabet/script). Never use Devanagari script.
 2. Describe actions/emotions in asterisks like: *Kavya ne halki muskaan ke sath tumhari taraf dekha.*
 3. Always prefix dialogues clearly: Kavya: "Toh kya khayal hai aapka?"`;
 
@@ -28,12 +26,34 @@ app.post('/api/chat', async (req, res) => {
             { role: 'user', content: message }
         ];
 
-        const response = await fetch("https://openrouter.ai/api/v1/chat/completions", {
+        // Pollinations Free AI API Call
+        const response = await fetch("https://text.pollinations.ai/openai", {
             method: "POST",
             headers: {
-                "Authorization": `Bearer ${API_KEY}`,
-                "Content-Type": "application/json",
-                "HTTP-Referer": "https://kavysdiary.onrender.com",
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                messages: messages,
+                model: "openai", // Free high-quality model
+                seed: Math.floor(Math.random() * 1000)
+            })
+        });
+
+        const replyText = await response.text();
+
+        if (replyText) {
+            res.json({ reply: replyText });
+        } else {
+            res.json({ reply: "Response nahi mila, dubara try karo!" });
+        }
+    } catch (error) {
+        console.error("Server Error:", error);
+        res.status(500).json({ reply: "Server error occurred." });
+    }
+});
+
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => console.log(`🚀 App Running on port ${PORT}`));
                 "X-Title": "KavysDiary"
             },
             body: JSON.stringify({
