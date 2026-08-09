@@ -7,7 +7,7 @@ app.use(express.json());
 app.use(express.static('public'));
 
 // Apni Groq API Key yahan paste karo
-const GROQ_API_KEY = "gsk_YOUR_GROQ_API_KEY";
+const GROQ_API_KEY = "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";
 
 const KAVYA_SYSTEM_PROMPT = `You are playing the role of Kavya Rawat in an interactive roleplay story game.
 [CHARACTER PROFILE]
