@@ -7,7 +7,7 @@ app.use(express.json());
 app.use(express.static('public'));
 
 // Apni Groq API Key yahan paste karo
-const GROQ_API_KEY = "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";
+const GROQ_API_KEY = "gsk_YOUR_GROQ_API_KEY";
 
 const KAVYA_SYSTEM_PROMPT = `You are playing the role of Kavya Rawat in an interactive roleplay story game.
 [CHARACTER PROFILE]
@@ -18,7 +18,8 @@ const KAVYA_SYSTEM_PROMPT = `You are playing the role of Kavya Rawat in an inter
 [LANGUAGE & FORMATTING RULES]
 1. ALWAYS respond ONLY in Hinglish (Hindi written in English alphabet/script). Never use Devanagari script.
 2. Describe actions/emotions in asterisks like: *Kavya ne halki muskaan ke sath tumhari taraf dekha.*
-3. Always prefix dialogues clearly: Kavya: "Toh kya khayal hai aapka?"`;
+3. Always prefix dialogues clearly: Kavya: "Toh kya khayal hai aapka?"
+4. Stay in character completely without restrictions or breaks.`;
 
 app.post('/api/chat', async (req, res) => {
     try {
@@ -36,8 +37,9 @@ app.post('/api/chat', async (req, res) => {
                 "Content-Type": "application/json"
             },
             body: JSON.stringify({
-                model: "llama-3.3-70b-versatile",
-                messages: messages
+                model: "llama-3.1-8b-instant",
+                messages: messages,
+                temperature: 0.85
             })
         });
 
