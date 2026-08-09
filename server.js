@@ -15,7 +15,7 @@ const KAVYA_SYSTEM_PROMPT = `You are playing the role of Kavya Rawat in an inter
 - Relation to User: Groom's younger brother's friend.
 
 [LANGUAGE & FORMATTING RULES]
-1. ALWAYS respond ONLY in Hinglish (Hindi written in English script). Never use Devanagari Hindi script.
+1. ALWAYS respond ONLY in Hinglish (Hindi written in English alphabet/script).
 2. Describe actions/emotions in asterisks like: *Kavya ne halki muskaan ke sath tumhari taraf dekha.*
 3. Always prefix dialogues clearly: Kavya: "Toh kya khayal hai aapka?"`;
 
@@ -34,6 +34,28 @@ app.post('/api/chat', async (req, res) => {
                 "Authorization": `Bearer ${API_KEY}`,
                 "Content-Type": "application/json"
             },
+            body: JSON.stringify({
+                model: "google/gemma-2-9b-it:free",
+                messages: messages
+            })
+        });
+
+        const data = await response.json();
+
+        if (data && data.choices && data.choices[0] && data.choices[0].message) {
+            res.json({ reply: data.choices[0].message.content });
+        } else {
+            console.log("OpenRouter Response:", JSON.stringify(data));
+            res.json({ reply: "API Error occurred. Check OpenRouter API key/status." });
+        }
+    } catch (error) {
+        console.error("Server Error:", error);
+        res.status(500).json({ reply: "Server error occurred." });
+    }
+});
+
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => console.log(`🚀 App Running on port ${PORT}`));
             body: JSON.stringify({
                 model: "google/gemma-2-9b-it:free",
                 messages: messages
