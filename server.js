@@ -37,7 +37,7 @@ app.post('/api/chat', async (req, res) => {
                 "X-Title": "KavysDiary"
             },
             body: JSON.stringify({
-                model: "qwen/qwen-2.5-7b-instruct:free",
+                model: "meta-llama/llama-3.2-3b-instruct:free",
                 messages: messages
             })
         });
