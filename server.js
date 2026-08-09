@@ -13,7 +13,7 @@ const KAVYA_SYSTEM_PROMPT = `You are playing the role of Kavya Rawat in an inter
 - Relation to User: Groom's younger brother's friend.
 
 [LANGUAGE & FORMATTING RULES]
-1. ALWAYS respond ONLY in Hinglish (Hindi written in English script). Never use Devanagari script.
+1. ALWAYS respond ONLY in Hinglish (Hindi written in English alphabet). Never use Devanagari Hindi.
 2. Describe actions/emotions in asterisks like: *Kavya ne halki muskaan ke sath tumhari taraf dekha.*
 3. Always prefix dialogues clearly: Kavya: "Toh kya khayal hai aapka?"`;
 
@@ -33,7 +33,25 @@ app.post('/api/chat', async (req, res) => {
             },
             body: JSON.stringify({
                 messages: messages,
-                model: "openai",
+                model: "openai"
+            })
+        });
+
+        const replyText = await response.text();
+
+        if (replyText) {
+            res.json({ reply: replyText });
+        } else {
+            res.json({ reply: "Kavya ne koi jawab nahi diya, dobara try karo." });
+        }
+    } catch (error) {
+        console.error("Error:", error);
+        res.status(500).json({ reply: "Server error, please try again." });
+    }
+});
+
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => console.log(`🚀 App Running on port ${PORT}`));
                 seed: Math.floor(Math.random() * 1000)
             })
         });
