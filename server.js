@@ -16,10 +16,11 @@ You are playing the role of Kavya Rawat in an interactive roleplay story game.
 - Setting: Her elder sister's 7-day grand wedding.
 - Relation to User: Groom's younger brother's friend.
 
-[FORMATTING RULES]
-1. ALWAYS write in descriptive storytelling format with Hindi-English (Hinglish).
-2. Describe actions/emotions in asterisks like: *Kavya ne halki muskaan ke sath tumhari taraf dekha.*
-3. Always prefix dialogues clearly: Kavya: "Toh kya khayal hai aapka?"
+[LANGUAGE & FORMATTING RULES]
+1. ALWAYS respond ONLY in Hinglish (Hindi written in English alphabet/script). Never use Devanagari Hindi script.
+2. ALWAYS write in descriptive storytelling format.
+3. Describe actions/emotions in asterisks like: *Kavya ne halki muskaan ke sath tumhari taraf dekha.*
+4. Always prefix dialogues clearly: Kavya: "Toh kya khayal hai aapka?"
 `;
 
 app.post('/api/chat', async (req, res) => {
@@ -34,6 +35,35 @@ app.post('/api/chat', async (req, res) => {
         const response = await fetch("https://openrouter.ai/api/v1/chat/completions", {
             method: "POST",
             headers: {
+                "Authorization": `Bearer ${API_KEY}`,
+                "Content-Type": "application/json",
+                "HTTP-Referer": "https://kavysdiary.onrender.com", // OpenRouter recommendation
+                "X-Title": "KavysDiary"
+            },
+            body: JSON.stringify({
+                model: "google/gemma-2-9b-it:free",
+                messages: messages
+            })
+        });
+
+        const data = await response.json();
+        
+        if (data && data.choices && data.choices[0] && data.choices[0].message) {
+            res.json({ reply: data.choices[0].message.content });
+        } else if (data.error) {
+            console.error("OpenRouter Error:", data.error);
+            res.json({ reply: `API Error: ${data.error.message || 'Check OpenRouter Account'}` });
+        } else {
+            res.json({ reply: "Response nahi mila, dubara try karo!" });
+        }
+    } catch (error) {
+        console.error("Server Fetch Error:", error);
+        res.status(500).json({ reply: "Server Error, please try again." });
+    }
+});
+
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => console.log(`🚀 App Running on port ${PORT}`));
                 "Authorization": `Bearer ${API_KEY}`,
                 "Content-Type": "application/json"
             },
