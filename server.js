@@ -13,7 +13,7 @@ const KAVYA_SYSTEM_PROMPT = `You are playing the role of Kavya Rawat in an inter
 - Relation to User: Groom's younger brother's friend.
 
 [LANGUAGE & FORMATTING RULES]
-1. ALWAYS respond ONLY in Hinglish (Hindi written in English alphabet/script). Never use Devanagari script.
+1. ALWAYS respond ONLY in Hinglish (Hindi written in English script). Never use Devanagari script.
 2. Describe actions/emotions in asterisks like: *Kavya ne halki muskaan ke sath tumhari taraf dekha.*
 3. Always prefix dialogues clearly: Kavya: "Toh kya khayal hai aapka?"`;
 
@@ -26,7 +26,6 @@ app.post('/api/chat', async (req, res) => {
             { role: 'user', content: message }
         ];
 
-        // Pollinations Free AI API Call
         const response = await fetch("https://text.pollinations.ai/openai", {
             method: "POST",
             headers: {
@@ -34,7 +33,7 @@ app.post('/api/chat', async (req, res) => {
             },
             body: JSON.stringify({
                 messages: messages,
-                model: "openai", // Free high-quality model
+                model: "openai",
                 seed: Math.floor(Math.random() * 1000)
             })
         });
@@ -45,31 +44,6 @@ app.post('/api/chat', async (req, res) => {
             res.json({ reply: replyText });
         } else {
             res.json({ reply: "Response nahi mila, dubara try karo!" });
-        }
-    } catch (error) {
-        console.error("Server Error:", error);
-        res.status(500).json({ reply: "Server error occurred." });
-    }
-});
-
-const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => console.log(`🚀 App Running on port ${PORT}`));
-                "X-Title": "KavysDiary"
-            },
-            body: JSON.stringify({
-                model: "meta-llama/llama-3.2-3b-instruct:free",
-                messages: messages
-            })
-        });
-
-        const data = await response.json();
-
-        if (data && data.choices && data.choices[0] && data.choices[0].message) {
-            res.json({ reply: data.choices[0].message.content });
-        } else {
-            console.log("OpenRouter Full Error Response:", JSON.stringify(data));
-            const errDetail = data.error ? data.error.message : "Model Busy";
-            res.json({ reply: `API Response Failed: ${errDetail}` });
         }
     } catch (error) {
         console.error("Server Error:", error);
